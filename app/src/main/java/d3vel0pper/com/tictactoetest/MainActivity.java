@@ -1,5 +1,6 @@
 package d3vel0pper.com.tictactoetest;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -11,11 +12,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private BoardManager boardManager;
     private Ai ai;
+    private boolean restartFlag;
+    private Button restartButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        restartFlag = false;
+        restartButton = (Button) findViewById(R.id.restart_button);
 
         LinearLayout parentLayout = (LinearLayout)findViewById(R.id.parent_linear);
 
@@ -42,7 +48,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void onClick(View v){
         Button button = (Button) v;
-        if(button.getText().equals(" ")){
+        if(button.getId() == R.id.restart_button){
+            restartFlag = true;
+            finish();
+        }
+        else if(button.getText().equals(" ")){
             //changeButtonState(boardManager.getTern(),button);
             int temp = Integer.parseInt(button.getTag().toString());
             boardManager.putStone(temp);
@@ -52,29 +62,50 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Toast.makeText(this,"Oの勝ちです",Toast.LENGTH_SHORT).show();
                         break;
                     case -1:
-                        Toast.makeText(this,"Oの勝ちです",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this,"Xの勝ちです",Toast.LENGTH_SHORT).show();
                         break;
                 }
+                showRestartButton();
             } else if(boardManager.checkIsBoardFull()){
                 Toast.makeText(this,"引き分けです",Toast.LENGTH_SHORT).show();
+                showRestartButton();
             }
             boardManager.switchTern();
             ai.run();
+            if(boardManager.isGameOver()){
+                switch (boardManager.getTern()){
+                    case 1:
+                        Toast.makeText(this,"Oの勝ちです",Toast.LENGTH_SHORT).show();
+                        break;
+                    case -1:
+                        Toast.makeText(this,"Xの勝ちです",Toast.LENGTH_SHORT).show();
+                        break;
+                }
+                showRestartButton();
+            } else if(boardManager.checkIsBoardFull()){
+                Toast.makeText(this,"引き分けです",Toast.LENGTH_SHORT).show();
+                showRestartButton();
+            }
             boardManager.switchTern();
         } else {
             Toast.makeText(this,"その場所には置けません",Toast.LENGTH_SHORT).show();
         }
     }
 
-//    private void changeButtonState(int tern,Button button){
-//        switch (tern){
-//            case 1:
-//                button.setText("O");
-//                break;
-//            case -1:
-//                button.setText("X");
-//                break;
-//        }
-//    }
+    private void showRestartButton(){
+        restartButton.setVisibility(View.VISIBLE);
+        restartButton.setOnClickListener(this);
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        if(restartFlag){
+            restartFlag = false;
+            Intent intent = new Intent(this,MainActivity.class);
+            startActivity(intent);
+        }
+    }
+
 
 }

@@ -90,7 +90,10 @@
     </GridLayout>
 
     <Button
+        android:id="@+id/restart_button"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:text="restart"/>
 
 </LinearLayout>
