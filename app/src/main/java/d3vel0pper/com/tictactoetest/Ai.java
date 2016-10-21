@@ -6,10 +6,10 @@ package d3vel0pper.com.tictactoetest;
 public class Ai {
 
     public Ai(BoardManager boardManager){
-        this.boardManager = boardManager;
-        boardState = new int[9];
+        this.parentBoard = boardManager;
+        this.boardManager = new BoardManager();
         for(int i = 0;i < 9;i++){
-            boardState[i] = boardManager.getBoardState()[i];
+            this.boardManager.getBoardState()[i] = boardManager.getBoardState()[i];
         }
         //debug
 //            evaValList = new ArrayList<Integer>();
@@ -17,11 +17,14 @@ public class Ai {
 //            bestPosListOth = new ArrayList<Integer>();
     }
 
-//        private List<Integer> evaValList;
-//        private List<Integer> bestPosListMy;
-//        private List<Integer> bestPosListOth;
-
+    /**
+     * own boarManager
+     */
     private BoardManager boardManager;
+    /**
+     * parent boardManager
+     */
+    private BoardManager parentBoard;
     private int myTurn;
     private int boardState[];
 
@@ -29,6 +32,19 @@ public class Ai {
      * max thinking depth
      */
     private int maxDepth = 9;
+
+    public boolean runAi(){
+        if(parentBoard.getHistoryPosition() != -1) {
+            boardManager.putStoneThink(parentBoard.getHistoryPosition());
+        }
+        int nextPosition = decideNext();
+        if(nextPosition == -1){
+            return false;
+        }
+        parentBoard.putStone(nextPosition);
+        boardManager.putStoneThink(nextPosition);
+        return true;
+    }
 
     /**
      * unDo putting
@@ -51,13 +67,22 @@ public class Ai {
         return myTurn;
     }
 
+    private boolean isAllEmpty(){
+        for(int i = 0;i < 9;i++){
+            if(boardManager.getBoardState()[i] != 0){
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * check board is leached or not
      * @return : -1 -> not yet , other -> position that will finish game if the place be put
      */
-    public int isLeach(){
+    public int isLeach(int targetTurn){
         int iterator = 0;
-        int tergetTurn = myTurn * -1;
+        int tergetTurn = targetTurn;
         for(;iterator < 9;iterator++) {
             if(boardManager.checkState(boardManager.getBoardState()[iterator])){
                 if(isRightLeach(iterator,tergetTurn)){
@@ -185,16 +210,26 @@ public class Ai {
      */
     public int decideNext(){
         int nextPosition = -1;
-        if(myTurn == 1 && boardManager.getBoardState()[4] == 0){
+        nextPosition = isLeach(myTurn);
+        if(nextPosition != -1){
+            return nextPosition;
+        }
+        if(isAllEmpty() && boardManager.getBoardState()[4] == 0){
             nextPosition = 4;
         }
         if(nextPosition != -1){
             return nextPosition;
         }
-        nextPosition = isLeach();
+        nextPosition = isLeach(myTurn * -1);
         if(nextPosition != -1){
             return nextPosition;
         }
+//        if(boardManager.getBoardState()[4] == 0){
+//            nextPosition = 4;
+//        }
+//        if(nextPosition != -1){
+//            return nextPosition;
+//        }
         nextPosition = minMax(myTurn * -1, maxDepth);
         if(nextPosition != -1){
             return nextPosition;
@@ -253,7 +288,7 @@ public class Ai {
         for(int i = 0;i < 9;i++){
             if(boardManager.checkState(boardManager.getBoardState()[i])){
 
-                boardManager.putStone(i);
+                boardManager.putStoneThink(i);
                 historyPosition = i;
                 childValue = minMax(turn * -1,depth);
 
@@ -282,5 +317,4 @@ public class Ai {
         }
         return childValue;
     }
-
 }

@@ -38,7 +38,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttons[8] = (Button)findViewById(R.id.button8);
 
         this.boardManager = new BoardManager(parentLayout,buttons);
-        ai = new Ai(this.boardManager);
+        this.ai = new Ai(this.boardManager);
+        ai.setAiTurn(-1);
 
         for (int i = 0; i < 9; i++){
             buttons[i].setOnClickListener(this);
@@ -53,41 +54,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             finish();
         }
         else if(button.getText().equals(" ")){
-            //changeButtonState(boardManager.getTern(),button);
             int temp = Integer.parseInt(button.getTag().toString());
             boardManager.putStone(temp);
-            if(boardManager.isGameOver()){
-                switch (boardManager.getTern()){
-                    case 1:
-                        Toast.makeText(this,"Oの勝ちです",Toast.LENGTH_SHORT).show();
-                        break;
-                    case -1:
-                        Toast.makeText(this,"Xの勝ちです",Toast.LENGTH_SHORT).show();
-                        break;
-                }
-                showRestartButton();
-            } else if(boardManager.checkIsBoardFull()){
-                Toast.makeText(this,"引き分けです",Toast.LENGTH_SHORT).show();
-                showRestartButton();
+            if(checkIsGameOver()){
+                return;
             }
-
-            if(boardManager.isGameOver()){
-                switch (boardManager.getTern()){
-                    case 1:
-                        Toast.makeText(this,"Oの勝ちです",Toast.LENGTH_SHORT).show();
-                        break;
-                    case -1:
-                        Toast.makeText(this,"Xの勝ちです",Toast.LENGTH_SHORT).show();
-                        break;
-                }
-                showRestartButton();
-            } else if(boardManager.checkIsBoardFull()){
-                Toast.makeText(this,"引き分けです",Toast.LENGTH_SHORT).show();
-                showRestartButton();
+            if(!ai.runAi()){
+                Toast.makeText(this,"AIは予期せぬ動作をしました。",Toast.LENGTH_SHORT).show();
+            }
+            if(checkIsGameOver()){
+                return;
             }
         } else {
             Toast.makeText(this,"その場所には置けません",Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private boolean checkIsGameOver(){
+        if(boardManager.isGameOver()){
+            switch (boardManager.getBoardState()[boardManager.getHistoryPosition()]){
+                case 1:
+                    Toast.makeText(this,"Oの勝ちです",Toast.LENGTH_SHORT).show();
+                    break;
+                case -1:
+                    Toast.makeText(this,"Xの勝ちです",Toast.LENGTH_SHORT).show();
+                    break;
+            }
+            showRestartButton();
+            return true;
+        } else if(boardManager.checkIsBoardFull()){
+            Toast.makeText(this,"引き分けです",Toast.LENGTH_SHORT).show();
+            showRestartButton();
+            return true;
+        }
+        return false;
     }
 
     private void showRestartButton(){

@@ -74,7 +74,7 @@ public class BoardManager {
     /**
      * Ai that computing
      */
-    private Ai ai;
+//    private Ai ai;
 
     /**
      * Getters
@@ -95,11 +95,26 @@ public class BoardManager {
         return tern;
     }
 
+//    public Ai getAi(){
+//        return this.ai;
+//    }
+
     /**
      * relate on handling in Android UI
      */
     public Button[] buttons;
     public LinearLayout parentLinear;
+
+    public BoardManager(){
+        tern = 1;
+        boardState = new int[9];
+        for(int i = 0;i < 9;i++){
+            boardState[i] = 0;
+        }
+        openCount = 9;
+//        ai = new Ai(this);
+        historyPosition = -1;
+    }
 
     public BoardManager(LinearLayout parentLinear,Button[]buttons){
         tern = 1;
@@ -108,65 +123,64 @@ public class BoardManager {
             boardState[i] = 0;
         }
         openCount = 9;
-        ai = new Ai(this);
         historyPosition = -1;
         this.parentLinear = parentLinear;
         this.buttons = new Button[9];
         this.buttons = buttons;
     }
 
-    public void run(){
-//        desideTurn();
-        while(true) {
-            //先攻ならここで走る
-            if(ai.getAiTurn() == 1){
-                if(!runAi()){
-                    System.out.println("AI shows unexpected work. Quit game....");
-                    return;
-                }
-                if(isGameOver()){
-                    printResult();
-                    return;
-                } else if(checkIsBoardFull()){
-                    printDraw();
-                    return;
-                }
-            }
-            printBoard();
-//            inputPosition();
-            if(isGameOver()){
-                printResult();
-                return;
-            } else if(checkIsBoardFull()){
-                printDraw();
-                return;
-            }
-            //後攻ならここで走る
-            if(ai.getAiTurn() == -1){
-                if(!runAi()){
-                    System.out.println("AI shows unexpected work. Quit game....");
-                    return;
-                }
-                if(isGameOver()){
-                    printResult();
-                    return;
-                } else if(checkIsBoardFull()){
-                    printDraw();
-                    return;
-                }
-            }
-        }
-    }
+//    public void run(){
+////        desideTurn();
+//        while(true) {
+//            //先攻ならここで走る
+//            if(ai.getAiTurn() == 1){
+//                if(!runAi()){
+//                    System.out.println("AI shows unexpected work. Quit game....");
+//                    return;
+//                }
+//                if(isGameOver()){
+//                    printResult();
+//                    return;
+//                } else if(checkIsBoardFull()){
+//                    printDraw();
+//                    return;
+//                }
+//            }
+//            printBoard();
+////            inputPosition();
+//            if(isGameOver()){
+//                printResult();
+//                return;
+//            } else if(checkIsBoardFull()){
+//                printDraw();
+//                return;
+//            }
+//            //後攻ならここで走る
+//            if(ai.getAiTurn() == -1){
+//                if(!runAi()){
+//                    System.out.println("AI shows unexpected work. Quit game....");
+//                    return;
+//                }
+//                if(isGameOver()){
+//                    printResult();
+//                    return;
+//                } else if(checkIsBoardFull()){
+//                    printDraw();
+//                    return;
+//                }
+//            }
+//        }
+//    }
 
-    private boolean runAi(){
-        int nextPosition = ai.decideNext();
-        if(nextPosition == -1){
-            return false;
-        }
-        putStone(nextPosition);
-        printBoard();
-        return true;
-    }
+//    public boolean runAi(){
+//        int nextPosition = ai.decideNext();
+//        if(nextPosition == -1){
+//            return false;
+//        }
+//        putStone(nextPosition);
+//        printBoard();
+//        return true;
+//    }
 
     public void putStone(int position){
         boardState[position] = tern;
@@ -175,6 +189,13 @@ public class BoardManager {
         } else if(tern == -1){
             buttons[position].setText("X");
         }
+        historyPosition = position;
+        openCount--;
+        switchTurn();
+    }
+
+    public void putStoneThink(int position){
+        boardState[position] = tern;
         historyPosition = position;
         openCount--;
         switchTurn();
