@@ -80,7 +80,7 @@ public class BoardManager {
     /**
      * Ai that computing
      */
-//    private Ai ai;
+    private Ai ai;
 
     /**
      * Constructor
@@ -160,7 +160,7 @@ public class BoardManager {
                 printDraw();
                 return;
             }
-            switchTern();
+            switchTurn();
             //後攻ならここで走る
 //            if(ai.getAiTern() == -1){
 //                runAi();
@@ -177,32 +177,16 @@ public class BoardManager {
         }
     }
 
-//    private void runAi(){
-//        putStone(ai.desideNext());
-//        putStone(ai.desideTempNext());
-//        printBoard();
-//        switchTern();
-//        openCount--;
-//    }
 
-//    private void desideTurn(){
-//        System.out.println("先攻か後攻か選択してください。");
-//        System.out.println("先攻：１　後攻：２");
-//        try {
-//            String buf = br.readLine();
-//            int input = Integer.parseInt(buf);
-//            if(input == 1){
-//                ai.setAiTern(-1);
-//            } else if(input == 2){
-//                ai.setAiTern(1);
-//            } else {
-//                System.out.println("正しい数字を入力してください。");
-//                desideTurn();
-//            }
-//        } catch(IOException e){
-//            e.printStackTrace();
-//        }
-//    }
+    private boolean runAi(){
+        int nextPosition = ai.decideNext();
+        if(nextPosition == -1){
+            return false;
+        }
+        putStone(nextPosition);
+        printBoard();
+        return true;
+    }
 
     private void inputPosition(){
         System.out.println("置く場所を入力してください。");
@@ -294,7 +278,7 @@ public class BoardManager {
         return false;
     }
 
-    public void switchTern(){
+    public void switchTurn(){
         if(tern == -1){
             tern = 1;
         } else if(tern == 1){
@@ -411,6 +395,10 @@ public class BoardManager {
             return true;
         }
         return false;
+    }
+
+    public void incrementOpenCount(){
+        openCount++;
     }
 
 }
