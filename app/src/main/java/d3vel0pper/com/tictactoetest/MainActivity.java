@@ -70,8 +70,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(this,"引き分けです",Toast.LENGTH_SHORT).show();
                 showRestartButton();
             }
-            boardManager.switchTurn();
-            ai.run();
+
             if(boardManager.isGameOver()){
                 switch (boardManager.getTern()){
                     case 1:
@@ -86,7 +85,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(this,"引き分けです",Toast.LENGTH_SHORT).show();
                 showRestartButton();
             }
-            boardManager.switchTurn();
         } else {
             Toast.makeText(this,"その場所には置けません",Toast.LENGTH_SHORT).show();
         }
