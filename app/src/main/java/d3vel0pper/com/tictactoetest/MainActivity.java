@@ -11,7 +11,7 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private BoardManager boardManager;
-    private Ai ai;
+    protected Ai ai;
     private boolean restartFlag;
     private Button restartButton;
 
@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             buttons[i].setOnClickListener(this);
             buttons[i].setTag(Integer.toString(i));
         }
+        ChoiceFragment dialog = new ChoiceFragment();
+        dialog.show(getSupportFragmentManager(),"explanation");
     }
 
     public void onClick(View v){
@@ -60,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return;
             }
             if(!ai.runAi()){
-                Toast.makeText(this,"AIは予期せぬ動作をしました。",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,"AIは予期せぬ動作で終了しました",Toast.LENGTH_SHORT).show();
             }
             if(checkIsGameOver()){
                 return;
@@ -70,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private boolean checkIsGameOver(){
+    protected boolean checkIsGameOver(){
         if(boardManager.isGameOver()){
             switch (boardManager.getBoardState()[boardManager.getHistoryPosition()]){
                 case 1:
@@ -105,5 +107,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    protected void setAiTurn(int turn){
+        ai.setAiTurn(turn);
+    }
 
 }
