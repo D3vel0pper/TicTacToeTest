@@ -3,6 +3,7 @@ package d3vel0pper.com.tictactoetest;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -14,11 +15,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected Ai ai;
     private boolean restartFlag;
     private Button restartButton;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+//        toolbar = (Toolbar)findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//        toolbar.setTitle("～勝てないXO!?三目並べ～");
 
         restartFlag = false;
         restartButton = (Button) findViewById(R.id.restart_button);
