@@ -2,6 +2,7 @@ package d3vel0pper.com.tictactoetest;
 
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -87,6 +88,10 @@ public class ChoiceFragment extends DialogFragment implements View.OnClickListen
         }
     }
 
-    
+    @Override
+    public void onCancel(DialogInterface dialog){
+        parent.setAiTurn(-1);
+        Toast.makeText(parent,"ゲームスタート！！\nあなたが先攻です",Toast.LENGTH_SHORT).show();
+    }
 
 }
