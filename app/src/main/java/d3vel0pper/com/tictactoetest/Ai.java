@@ -210,13 +210,18 @@ public class Ai {
      */
     public int decideNext(){
         int nextPosition = -1;
+//        nextPosition = isLeach(myTurn);
+//        if(nextPosition != -1){
+//            return nextPosition;
+//        }
+//        if(isAllEmpty() && boardManager.getBoardState()[4] == 0){
+////        if(boardManager.getBoardState()[4] == 0){
+//            nextPosition = 4;
+//        }
+//        if(nextPosition != -1){
+//            return nextPosition;
+//        }
         nextPosition = isLeach(myTurn);
-        if(nextPosition != -1){
-            return nextPosition;
-        }
-        if(isAllEmpty() && boardManager.getBoardState()[4] == 0){
-            nextPosition = 4;
-        }
         if(nextPosition != -1){
             return nextPosition;
         }
@@ -224,12 +229,13 @@ public class Ai {
         if(nextPosition != -1){
             return nextPosition;
         }
-//        if(boardManager.getBoardState()[4] == 0){
-//            nextPosition = 4;
-//        }
-//        if(nextPosition != -1){
-//            return nextPosition;
-//        }
+        //defence will put at center
+        if(myTurn == -1 && boardManager.getBoardState()[4] == 0){
+            nextPosition = 4;
+        }
+        if(nextPosition != -1){
+            return nextPosition;
+        }
         nextPosition = minMax(myTurn * -1, maxDepth);
         if(nextPosition != -1){
             return nextPosition;
@@ -254,21 +260,22 @@ public class Ai {
         if(depth != maxDepth) {
             if (boardManager.isGameOver()) {
                 //if before this, is myTurn
+//                if (turn * -1 == myTurn) {
                 if (turn * -1 == myTurn) {
-                    if(boardManager.getHistoryPosition() == 0
-                            || boardManager.getHistoryPosition() == 2
-                            || boardManager.getHistoryPosition() == 6
-                            || boardManager.getHistoryPosition() == 8){
-                        return 10 - depth - 2;
-                    }
+//                    if(boardManager.getHistoryPosition() == 0
+//                            || boardManager.getHistoryPosition() == 2
+//                            || boardManager.getHistoryPosition() == 6
+//                            || boardManager.getHistoryPosition() == 8){
+//                        return 10 - depth - 2;
+//                    }
                     return 10 - depth;
                 } else {
-                    if(boardManager.getHistoryPosition() == 0
-                            || boardManager.getHistoryPosition() == 2
-                            || boardManager.getHistoryPosition() == 6
-                            || boardManager.getHistoryPosition() == 8){
-                        return depth + 2 - 10;
-                    }
+//                    if(boardManager.getHistoryPosition() == 0
+//                            || boardManager.getHistoryPosition() == 2
+//                            || boardManager.getHistoryPosition() == 6
+//                            || boardManager.getHistoryPosition() == 8){
+//                        return depth + 2 - 10;
+//                    }
                     return depth - 10;
                 }
             }
@@ -301,7 +308,7 @@ public class Ai {
                 }
                 //if next is my turn
                 else if((turn * -1) == myTurn){
-                    if(childValue <= evaluatedValue){
+                    if(childValue < evaluatedValue){
                         evaluatedValue = childValue;
                         bestNextPosition = historyPosition;
                     }
